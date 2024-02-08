@@ -12,6 +12,15 @@ export default class AuthService {
 
   // authenticate
 
+  async authenticate(username: string, password: string): Promise<IUser> {
+    const user = await User.findOne({ username });
+    if (!user) throw new Error('User not found');
+
+    const isMatch = await argon2.verify(user.password, password);
+    if (!isMatch) throw new Error('Invalid credentials');
+    return user;
+  }
+
   // generate token
 
   generateToken(user: IUser): string {
