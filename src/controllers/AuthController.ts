@@ -5,6 +5,7 @@ import AuthService from '../services/AuthService';
 @route('/auth')
 export default class AuthController {
   constructor(private readonly authService: AuthService) {}
+
   @route('/register')
   @POST()
   public async register(req: Request, res: Response): Promise<void> {
@@ -15,9 +16,9 @@ export default class AuthController {
       res.status(201).json({ token });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).send({ error: error.message });
       } else {
-        res.status(500).send({ error: 'Ocurrió un error en el servidor' });
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
       }
     }
   }
@@ -29,12 +30,12 @@ export default class AuthController {
       const { username, password } = req.body;
       const user = await this.authService.authenticate(username, password);
       const token = this.authService.generateToken(user);
-      res.status(200).json({ token });
+      res.json({ token });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).send({ error: error.message });
       } else {
-        res.status(500).send({ error: 'Ocurrió un error en el servidor' });
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
       }
     }
   }

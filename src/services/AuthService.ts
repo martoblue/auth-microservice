@@ -10,25 +10,28 @@ export default class AuthService {
     return user;
   }
 
-  // authenticate
-
+  // authenticate "login"
   async authenticate(username: string, password: string): Promise<IUser> {
     const user = await User.findOne({ username });
-    if (!user) throw new Error('User not found');
-
+    if (!user) throw new Error('Usuario no encontrado');
     const isMatch = await argon2.verify(user.password, password);
-    if (!isMatch) throw new Error('Invalid credentials');
+    if (!isMatch) throw new Error('Credenciales incorrectas');
     return user;
   }
 
   // generate token
-
   generateToken(user: IUser): string {
     if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET env variable not set');
+      throw new Error('JWT_SECRET no está definido en las variables de entorno');
     }
-    return sign({ userId: user.id, username: user.username }, process.env.JWT_SECRET as string, { expiresIn: '1h' });
+    return sign(
+      {
+        userId: user._id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+    );
   }
-
   // verifytoken
 }
