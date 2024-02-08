@@ -42,7 +42,7 @@ export default class AuthController {
 
   @route('/validatetoken')
   @POST()
-  public async verify(req: Request, res: Response): Promise<void> {
+  public async validateToken(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.body;
       this.authService.verifyToken(token);
