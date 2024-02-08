@@ -39,4 +39,20 @@ export default class AuthController {
       }
     }
   }
+
+  @route('/validatetoken')
+  @POST()
+  public async verify(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.body;
+      this.authService.verifyToken(token);
+      res.status(200).send({ message: 'Token valido' });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).send({ error: error.message });
+      } else {
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
+      }
+    }
+  }
 }

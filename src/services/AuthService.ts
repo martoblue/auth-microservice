@@ -34,4 +34,16 @@ export default class AuthService {
     );
   }
   // verifytoken
+
+  verifyToken(token: string): any {
+    try {
+      if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET no está definido en las variables de entorno');
+      }
+      const decoded = verify(token, process.env.JWT_SECRET);
+      console.log(decoded);
+    } catch (error) {
+      throw new Error('Token inválido');
+    }
+  }
 }
