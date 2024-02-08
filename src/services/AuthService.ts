@@ -3,14 +3,14 @@ import { sign, verify } from 'jsonwebtoken';
 import * as argon2 from 'argon2';
 
 export default class AuthService {
-  // registrar
+  // Registrar
   async register(username: string, password: string, role: string): Promise<IUser> {
     const user = new User({ username, password, role });
     await user.save();
     return user;
   }
 
-  // authenticate "login"
+  // Authenticate login
   async authenticate(username: string, password: string): Promise<IUser> {
     const user = await User.findOne({ username });
     if (!user) throw new Error('Usuario no encontrado');
@@ -19,7 +19,7 @@ export default class AuthService {
     return user;
   }
 
-  // generate token
+  // Generate token
   generateToken(user: IUser): string {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET no está definido en las variables de entorno');
@@ -33,7 +33,7 @@ export default class AuthService {
       { expiresIn: '1h' },
     );
   }
-  // verifytoken
+  // Verify token
 
   verifyToken(token: string): any {
     try {
@@ -41,7 +41,7 @@ export default class AuthService {
         throw new Error('JWT_SECRET no está definido en las variables de entorno');
       }
       const decoded = verify(token, process.env.JWT_SECRET);
-      console.log(decoded);
+      return { result: decoded };
     } catch (error) {
       throw new Error('Token inválido');
     }

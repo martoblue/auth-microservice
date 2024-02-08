@@ -45,8 +45,8 @@ export default class AuthController {
   public async validateToken(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.body;
-      this.authService.verifyToken(token);
-      res.status(200).send({ message: 'Token valido' });
+      const decoded = this.authService.verifyToken(token);
+      res.status(200).json(decoded);
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).send({ error: error.message });
