@@ -2,6 +2,7 @@ import { POST, route } from 'awilix-express';
 import { Request, Response } from 'express';
 import AuthService from '../services/AuthService';
 
+@route('/auth')
 export default class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -15,9 +16,42 @@ export default class AuthController {
       res.status(201).json({ token });
     } catch (error) {
       if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).send({ error: error.message });
       } else {
-        res.status(500).send({ error: 'Ocurrió un error en el servidor' });
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
+      }
+    }
+  }
+
+  @route('/login')
+  @POST()
+  public async login(req: Request, res: Response): Promise<void> {
+    try {
+      const { username, password } = req.body;
+      const user = await this.authService.authenticate(username, password);
+      const token = this.authService.generateToken(user);
+      res.json({ token });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).send({ error: error.message });
+      } else {
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
+      }
+    }
+  }
+
+  @route('/validatetoken')
+  @POST()
+  public async validateToken(req: Request, res: Response): Promise<void> {
+    try {
+      const { token } = req.body;
+      const decoded = this.authService.verifyToken(token);
+      res.status(200).json(decoded);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).send({ error: error.message });
+      } else {
+        res.status(500).send({ error: 'Ocurrio un error inesperado' });
       }
     }
   }

@@ -7,8 +7,8 @@
     "dev": "ts-node-dev src/app.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Luis Martorelli, luismarto8a@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "argon2": "^0.31.2",
     "awilix": "^10.0.1",
